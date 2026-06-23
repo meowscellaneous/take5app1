@@ -6,25 +6,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet"> -->
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
   <script>emailjs.init("4BjgTTumGjkrr7HyO");</script>
-
-  <!-- Microsoft Teams JavaScript library -->
-  <script src="https://res.cdn.office.net/teams-js/2.53.1/js/MicrosoftTeams.min.js"
-          integrity="sha384-u/ADAeV1WhPQrTvoCmXcIhzguvD7vpAOyMxZFTIk4lTwgZAKtRKT1SFqOWTyQJ/s"
-          crossorigin="anonymous"></script>
-  <script>
-    // Initialise the Teams SDK when running inside Teams. In a normal browser
-    // there is no Teams host to respond, so this quietly does nothing and the
-    // app still works standalone (e.g. on Netlify or locally).
-    if (window.microsoftTeams) {
-      microsoftTeams.app.initialize()
-        .then(function () {
-          microsoftTeams.app.notifySuccess(); // tell Teams the tab loaded OK
-        })
-        .catch(function () {
-          // Not inside Teams (or init timed out) — fine, the app runs normally.
-        });
-    }
-  </script>
   <meta charset="UTF-8" />
   <link rel="icon" href="orange_icon.png" type="image/png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
