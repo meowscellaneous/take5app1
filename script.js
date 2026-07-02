@@ -524,8 +524,7 @@ const questions = [
   
   function finishQuiz() {
     document.getElementById("card").innerHTML = `
-      <h4>Thanks for answering! A copy of your responses has been sent to you and your supervisor.
-      If you don't see it, check your junk inbox and add fprtake5@gmail.com and fprtake5.2@gmail.com to your safe senders list.</h4>`;
+      <h4>Thanks for answering! A copy of your responses has been sent to you and your supervisor.</h4>`;
     document.querySelector(".buttons").style.display = "none";
     confirmBtn.style.display = "none";
     backBtn.style.display = "none";
@@ -556,11 +555,11 @@ const questions = [
         return str;
       }).join("\n\n");
       
-      emailjs.send('take5', 'template_maenl8s', {
+      emailjs.send('service_ueuknbt', 'template_maenl8s', {
         name: usersName,
         task: todaysTask, 
         date: todaysDate, 
-        supervisoremail: `safety@fprenergy.com, ${supervisorEmail}`, // safety@fprenergy.com, supervisorEmail SAFETY MUST COME FIRST hehe or the email thinks safety is supervisor
+        supervisoremail: supervisorEmail,
         responses: checklistText,
         youremail: userEmail
       }).then(function(response) {
