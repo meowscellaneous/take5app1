@@ -7,7 +7,6 @@ const questions = [
       key: "supervisorEmail", remember: true },
   { type: "text", text: "Task:" },
   { type: "text", text: "Location:" },
-  { type: "text", text: "Date (DD/MM/YYYY):" },  
   { type: "yesno",
       text: "Could I strain or injure myself physically? e.g. overexertion, manual handling, being caught in/on/between something, sharp edges, rotating parts, uncontrolled movement or falling objects",
       controlOn: "yes",
@@ -94,6 +93,11 @@ const questions = [
   const yesBtn = document.getElementById("yes-btn");
   const noBtn = document.getElementById("no-btn");
   const backBtn = document.getElementById("back-btn");
+  const progressText = document.getElementById("progress-text");
+
+  function updateProgress(current, total) {
+    progressText.textContent = `Question ${current} of ${total}`;
+  }
 
   function showStorageCheck() {
     if (storageCheckIndex >= storedKeysToCheck.length) {
@@ -122,6 +126,7 @@ const questions = [
       } else {
         backBtn.style.display = "inline-block";
       }
+      updateProgress(currentIndex + 1, questions.length);
     } else {
         console.log("THIS PART MEANS WE did the weird?")
 
@@ -148,6 +153,7 @@ const questions = [
     backBtn.style.display = controlIndex > 0 ? "inline-block" : "none"; // if it's the first control question then don't offer a back button
 
     textInput.value = answers[questionIndex]?.control || "";
+    updateProgress(questions.length + controlIndex + 1, questions.length + controlsNeeded.length);
   }
   
   function showQuestion() {
@@ -207,6 +213,7 @@ const questions = [
     }
   
     backBtn.style.display = currentIndex > 0 || waitingForControl ? "inline-block" : "none";
+    updateProgress(currentIndex + 1, questions.length);
   }
   
   function handleControlRequired(response, q) {
@@ -462,16 +469,32 @@ const questions = [
     }
   };
   
+  function getFormattedDate() {
+    const d = new Date();
+    const dd = String(d.getDate()).padStart(2, "0");
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const yyyy = d.getFullYear();
+    return `${dd}/${mm}/${yyyy}`;
+  }
+
   function finishQuiz() {
     document.getElementById("card").innerHTML = `
       <h4>Thanks for answering! A copy of your responses has been sent to you and your supervisor.</h4>`;
     document.querySelector(".buttons").style.display = "none";
     confirmBtn.style.display = "none";
     backBtn.style.display = "none";
-  
+    progressText.textContent = "";
+
+    const todaysDate = getFormattedDate();
+
+    // insert the auto-filled date right after "Location" so it still appears in the record
+    const locationIdx = answers.findIndex(a => a.question.includes("Location"));
+    const displayAnswers = [...answers];
+    displayAnswers.splice(locationIdx + 1, 0, { question: "Date (DD/MM/YYYY):", answer: todaysDate });
+
     const summary = document.createElement("div");
     summary.id = "result-summary";
-    summary.innerHTML = answers.map((a, i) => {
+    summary.innerHTML = displayAnswers.map((a, i) => {
       let html = `<p><strong>Q${i + 1}: ${a.question}</strong><br>${a.answer}`;
       if (a.control) html += `<br><em>Control:</em> ${a.control}`;
       html += "</p>";
@@ -482,14 +505,13 @@ const questions = [
 
     const usersName = answers.find(a => a.question.includes("Name:"))?.answer || "";
     const todaysTask = answers.find(a => a.question.includes("Task:"))?.answer || "";
-    const todaysDate = answers.find(a => a.question.includes("Date"))?.answer || "";
     const userEmail = answers.find(a => a.question.includes("your email"))?.answer || "";
     const supervisorEmail = answers.find(a => a.question.includes("supervisor"))?.answer || "";
 
     console.log("Sending to:", userEmail);
     console.log(`${userEmail}, ${supervisorEmail}`);
 
-    const checklistText = answers.map((a, i) => {
+    const checklistText = displayAnswers.map((a, i) => {
         let str = `Q${i + 1}: ${a.question}\n${a.answer}`;
         if (a.control) str += `\nControl: ${a.control}`;
         return str;
