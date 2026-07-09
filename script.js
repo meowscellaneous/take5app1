@@ -487,14 +487,9 @@ const questions = [
 
     const todaysDate = getFormattedDate();
 
-    // insert the auto-filled date right after "Location" so it still appears in the record
-    const locationIdx = answers.findIndex(a => a.question.includes("Location"));
-    const displayAnswers = [...answers];
-    displayAnswers.splice(locationIdx + 1, 0, { question: "Date (DD/MM/YYYY):", answer: todaysDate });
-
     const summary = document.createElement("div");
     summary.id = "result-summary";
-    summary.innerHTML = displayAnswers.map((a, i) => {
+    summary.innerHTML = answers.map((a, i) => {
       let html = `<p><strong>Q${i + 1}: ${a.question}</strong><br>${a.answer}`;
       if (a.control) html += `<br><em>Control:</em> ${a.control}`;
       html += "</p>";
@@ -511,7 +506,7 @@ const questions = [
     console.log("Sending to:", userEmail);
     console.log(`${userEmail}, ${supervisorEmail}`);
 
-    const checklistText = displayAnswers.map((a, i) => {
+    const checklistText = answers.map((a, i) => {
         let str = `Q${i + 1}: ${a.question}\n${a.answer}`;
         if (a.control) str += `\nControl: ${a.control}`;
         return str;
